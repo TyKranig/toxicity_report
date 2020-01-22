@@ -1,11 +1,16 @@
-// import * as toxicity from '@tensorflow-models/toxicity';
+axios.get("https://api.opendota.com/api/matches/5202117012").then(result => {
+    console.log(result);
+    document.write(JSON.stringify(result["data"]["chat"], null, '    '));
+}).catch(error => {
+    console.log(error)
+})
 // The minimum prediction confidence
 const threshold = 0.9;
 
 // Load the model. Users optionally pass in a threshold and an array of
 // labels to include.
 toxicity.load(threshold).then(model => {
-    const sentences = ['you suck', 'you rock', 'fuck_you'];
+    const sentences = ['you suck'];
     console.log(sentences);
 
     model.classify(sentences).then(predictions => {
@@ -14,24 +19,6 @@ toxicity.load(threshold).then(model => {
         // final prediction in `match` (either `true` or `false`).
         // If neither prediction exceeds the threshold, `match` is `null`.
 
-        console.log(predictions);
-        /*
-        prints:
-        {
-          "label": "identity_attack",
-          "results": [{
-            "probabilities": [0.9659664034843445, 0.03403361141681671],
-            "match": false
-          }]
-        },
-        {
-          "label": "insult",
-          "results": [{
-            "probabilities": [0.08124706149101257, 0.9187529683113098],
-            "match": true
-          }]
-        },
-        ...
-         */
+        console.log(JSON.stringify(predictions));
     });
 });

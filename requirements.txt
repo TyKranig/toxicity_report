@@ -1,2 +1,2 @@
-Naked
 requests
+webbrowser

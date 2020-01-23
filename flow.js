@@ -1,6 +1,13 @@
 axios.get("https://api.opendota.com/api/matches/5202117012").then(result => {
     console.log(result);
-    document.write(JSON.stringify(result["data"]["chat"], null, '    '));
+    // document.write(JSON.stringify(result["data"]["chat"], null, '    '));
+    const chat = result["data"]["chat"]
+    for(const text in chat){
+        const obj = chat[text]
+        if(obj["type"] == "chat"){
+            document.write(obj["unit"] + " " + obj["key"], "<br>");
+        }
+    }
 }).catch(error => {
     console.log(error)
 })

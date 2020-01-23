@@ -1,5 +1,5 @@
-# toxicity_report
-A tool to calculate the most toxic players in Chill Dota League
+# Toxicity_Report
+A tool to calculate the most toxic players in Chill Dota League, created because I thought it would be interesting to find out the most toxic players in the league
 
 This uses a tensor flow [library](https://github.com/tensorflow/tfjs-models/tree/master/toxicity)
 

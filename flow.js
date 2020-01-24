@@ -1,16 +1,45 @@
-axios.get("https://api.opendota.com/api/matches/5202117012").then(result => {
-    console.log(result);
-    // document.write(JSON.stringify(result["data"]["chat"], null, '    '));
-    const chat = result["data"]["chat"]
-    for(const text in chat){
-        const obj = chat[text]
-        if(obj["type"] == "chat"){
-            document.write(obj["unit"] + " " + obj["key"], "<br>");
+function getChat() {
+    axios.get("https://api.opendota.com/api/matches/5202117012").then(result => {
+        console.log(result);
+        // document.write(JSON.stringify(result["data"]["chat"], null, '    '));
+        const chat = result["data"]["chat"]
+        for (const text in chat) {
+            const obj = chat[text]
+            if (obj["type"] == "chat") {
+                document.write(obj["unit"] + ": " + obj["key"], "<br>");
+            }
         }
+    }).catch(error => {
+        console.log(error)
+    })
+}
+
+function upload() {
+    var fileUpload = document.getElementById("fileUpload");
+    if (typeof (FileReader) != "undefined") {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var table = document.createElement("table");
+            var rows = e.target.result.split("\n");
+            for (var i = 0; i < rows.length; i++) {
+                var row = table.insertRow(-1);
+                var cells = rows[i].split(",");
+                for (var j = 0; j < cells.length; j++) {
+                    var cell = row.insertCell(-1);
+                    cell.innerHTML = cells[j];
+                }
+            }
+            var dvCSV = document.getElementById("dvCSV");
+            dvCSV.innerHTML = "";
+            dvCSV.appendChild(table);
+        }
+        reader.readAsText(fileUpload.files[0]);
+    } else {
+        alert("This browser does not support HTML5.");
     }
-}).catch(error => {
-    console.log(error)
-})
+}
+
+
 // The minimum prediction confidence
 const threshold = 0.9;
 

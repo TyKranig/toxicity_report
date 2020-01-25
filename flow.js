@@ -1,7 +1,7 @@
 var chat = {}
 
 function getGame(matchid) {
-    axios.get(`https://api.opendota.com/api/matches/${matchid}`).then(result => {
+    return axios.get(`https://api.opendota.com/api/matches/${matchid}`).then(result => {
         const chat = result["data"]["chat"]
         const players = result["data"]["players"]
         const all = [];
@@ -22,14 +22,18 @@ function getGame(matchid) {
     })
 }
 
-const getChat = (games) => {
+async function getChat(games) {
     const promises = [];
     let i = 0;
     for (game in games) {
         i++;
         match = games[game].trim();
-        promises.push(new Promise(() => {setTimeout(getGame, 1000, match)}));
-        if(i > 10) {
+        await new Promise(resolve => {
+            setTimeout(resolve, 1000)
+        })
+        // console.log(new Date().getSeconds())
+        promises.push(getGame(match));
+        if (i > 10) {
             break;
         }
     }

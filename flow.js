@@ -1,26 +1,49 @@
-const getChat = (games) => {
-    console.log(games)
-    axios.get("https://api.opendota.com/api/matches/5202117012").then(result => {
-        console.log(result);
-        // document.write(JSON.stringify(result["data"]["chat"], null, '    '));
+var chat = {}
+
+function getGame(matchid) {
+    axios.get(`https://api.opendota.com/api/matches/${matchid}`).then(result => {
         const chat = result["data"]["chat"]
+        const players = result["data"]["players"]
+        const all = [];
         for (const text in chat) {
             const obj = chat[text]
-            if (obj["type"] == "chat") {
-                document.getElementById('chat').innerHTML += obj["unit"] + ": " + obj["key"], "<br>";
+            if (obj["type"] == "chat" && obj["slot"] < 10) {
+                obj["account_id"] = players[obj["slot"]]["account_id"];
+                all.push(obj);
+                // console.log(obj)
+                // chat[players[obj["slot"]]["account_id"]] += `\t${obj["key"]}`
             }
         }
+        // console.log(all)
+        return all;
     }).catch(error => {
-        console.log(error)
+        console.log(matchid);
+        console.log(error);
     })
 }
 
+const getChat = (games) => {
+    const promises = [];
+    let i = 0;
+    for (game in games) {
+        i++;
+        match = games[game].trim();
+        promises.push(new Promise(() => {setTimeout(getGame, 1000, match)}));
+        if(i > 10) {
+            break;
+        }
+    }
+    Promise.all(promises).then(values => {
+        console.log(values);
+    });
+}
+
 const upload = () => {
-    var fileUpload = document.getElementById("fileUpload");
+    let fileUpload = document.getElementById("fileUpload");
     if (typeof (FileReader) != "undefined") {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function (e) {
-            var games = e.target.result.split("\n");
+            let games = e.target.result.split("\n");
             getChat(games);
         }
         reader.readAsText(fileUpload.files[0]);

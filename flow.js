@@ -14,24 +14,14 @@ function getChat() {
     })
 }
 
+
 function upload() {
     var fileUpload = document.getElementById("fileUpload");
     if (typeof (FileReader) != "undefined") {
         var reader = new FileReader();
         reader.onload = function (e) {
-            var table = document.createElement("table");
-            var rows = e.target.result.split("\n");
-            for (var i = 0; i < rows.length; i++) {
-                var row = table.insertRow(-1);
-                var cells = rows[i].split(",");
-                for (var j = 0; j < cells.length; j++) {
-                    var cell = row.insertCell(-1);
-                    cell.innerHTML = cells[j];
-                }
-            }
-            var dvCSV = document.getElementById("dvCSV");
-            dvCSV.innerHTML = "";
-            dvCSV.appendChild(table);
+            var games = e.target.result.split("\n");
+            getChat(games);
         }
         reader.readAsText(fileUpload.files[0]);
     } else {

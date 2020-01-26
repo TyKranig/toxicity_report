@@ -19,7 +19,7 @@ function getGame(matchid) {
     }).catch(error => {
         console.log(matchid);
         console.log(error);
-    })
+    });
 }
 
 async function getChat(games) {
@@ -31,14 +31,22 @@ async function getChat(games) {
         await new Promise(resolve => {
             setTimeout(resolve, 1000)
         })
+        document.getElementById("chat").innerHTML = `${i}/${games.length}`
         // console.log(new Date().getSeconds())
         promises.push(getGame(match));
-        if (i > 10) {
+        if (i > 3) {
             break;
         }
     }
     Promise.all(promises).then(values => {
-        console.log(values);
+        for(match in values) {
+            mat = values[match];
+            for(text in mat) {
+                te = mat[text];
+                chat[te["account_id"]] += ` ${te["key"]}`;
+            }
+        }
+        console.log(chat)
     });
 }
 

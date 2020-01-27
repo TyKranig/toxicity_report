@@ -41,7 +41,7 @@ async function getChat(games) {
     Promise.all(promises).then(values => {
         for(match in values) {
             mat = values[match];
-            for(text in mat) {
+            for(const text in mat) {
                 te = mat[text];
                 chat[te["account_id"]] += ` ${te["key"]}`;
             }
@@ -65,6 +65,9 @@ const upload = () => {
 }
 
 const getToxic = () => {
+    for(i in chat) {
+        const text = chat[i]
+    }
     // The minimum prediction confidence
     const threshold = 0.9;
 

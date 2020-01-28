@@ -39,14 +39,14 @@ async function getChat(games) {
         }
     }
     Promise.all(promises).then(values => {
-        for(match in values) {
+        for (match in values) {
             mat = values[match];
-            for(const text in mat) {
+            for (const text in mat) {
                 te = mat[text];
                 chat[te["account_id"]] += ` ${te["key"]}`;
             }
         }
-        console.log(chat)
+        getToxic();
     });
 }
 
@@ -65,8 +65,14 @@ const upload = () => {
 }
 
 const getToxic = () => {
-    for(i in chat) {
-        const text = chat[i]
+    let index = 0;
+    for (const i in chat) {
+        if (chat.hasOwnProperty(i)) {
+            const text = chat[i].replace("undefined ", "")
+            index++; // dictionary get amount of keys
+            document.getElementById("toxicity").innerHTML = `${index}/${chat.length}`
+            console.log(text);
+        }
     }
     // The minimum prediction confidence
     const threshold = 0.9;

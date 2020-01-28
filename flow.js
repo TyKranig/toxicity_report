@@ -32,7 +32,6 @@ async function getChat(games) {
             setTimeout(resolve, 1000)
         })
         document.getElementById("chat").innerHTML = `${i}/${games.length}`
-        // console.log(new Date().getSeconds())
         promises.push(getGame(match));
         if (i > 3) {
             break;
@@ -65,32 +64,37 @@ const upload = () => {
 }
 
 const getToxic = () => {
-    let index = 0;
-    for (const i in chat) {
-        if (chat.hasOwnProperty(i)) {
-            const text = chat[i].replace("undefined ", "")
-            index++; // dictionary get amount of keys
-            document.getElementById("toxicity").innerHTML = `${index}/${chat.length}`
-            console.log(text);
-        }
-    }
     // The minimum prediction confidence
     const threshold = 0.9;
+    const proms = [];
+    let index = 0;
+    for (const i in chat) {
+        if (index > 2) {
+            return 0;
+        }
+        if (chat.hasOwnProperty(i)) {
+            const text = chat[i].replace("undefined ", "")
+            // dictionary get amount of keys
+            // Load the model. Users optionally pass in a threshold and an array of
+            // labels to include.
 
-    // Load the model. Users optionally pass in a threshold and an array of
-    // labels to include.
-    toxicity.load(threshold).then(model => {
-        const sentences = ['you suck'];
-        console.log(sentences);
+            const promise = toxicity.load(threshold).then(model => {
+                const sentences = text.split(" ");
+                document.getElementById("toxicity").innerHTML = `${index++}/${chat.length}`
+                model.classify(sentences).then(predictions => {
+                    // `predictions` is an array of objects, one for each prediction head,
+                    // that contains the raw probabilities for each input along with the
+                    // final prediction in `match` (either `true` or `false`).
+                    // If neither prediction exceeds the threshold, `match` is `null`.
 
-        model.classify(sentences).then(predictions => {
-            // `predictions` is an array of objects, one for each prediction head,
-            // that contains the raw probabilities for each input along with the
-            // final prediction in `match` (either `true` or `false`).
-            // If neither prediction exceeds the threshold, `match` is `null`.
-
-            console.log(JSON.stringify(predictions));
-        });
+                    console.log(JSON.stringify(predictions));
+                    return predictions;
+                });
+            });
+            proms.push(promise);
+        }
+    }
+    Promise.all(proms).then(values => {
+        console.log(values);
     });
-
 }

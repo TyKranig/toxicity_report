@@ -78,17 +78,19 @@ const getToxic = () => {
             // Load the model. Users optionally pass in a threshold and an array of
             // labels to include.
 
-            const promise = toxicity.load(threshold).then(model => {
-                const sentences = text.split(" ");
-                document.getElementById("toxicity").innerHTML = `${index++}/${chat.length}`
-                model.classify(sentences).then(predictions => {
-                    // `predictions` is an array of objects, one for each prediction head,
-                    // that contains the raw probabilities for each input along with the
-                    // final prediction in `match` (either `true` or `false`).
-                    // If neither prediction exceeds the threshold, `match` is `null`.
+            const promise = new Promise(async () => {
+                toxicity.load(threshold).then(model => {
+                    const sentences = text.split(" ");
+                    document.getElementById("toxicity").innerHTML = `${index++}/${chat.length}`
+                    model.classify(sentences).then(predictions => {
+                        // `predictions` is an array of objects, one for each prediction head,
+                        // that contains the raw probabilities for each input along with the
+                        // final prediction in `match` (either `true` or `false`).
+                        // If neither prediction exceeds the threshold, `match` is `null`.
 
-                    console.log(JSON.stringify(predictions));
-                    return predictions;
+                        console.log(predictions);
+                        return predictions;
+                    });
                 });
             });
             proms.push(promise);

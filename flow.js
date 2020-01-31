@@ -77,7 +77,7 @@ const getToxic = () => {
             // dictionary get amount of keys
             // Load the model. Users optionally pass in a threshold and an array of
             // labels to include.
-
+            const playertox = {}
             const promise = new Promise(async () => {
                 toxicity.load(threshold).then(model => {
                     const sentences = text.split(" ");
@@ -87,7 +87,11 @@ const getToxic = () => {
                         // that contains the raw probabilities for each input along with the
                         // final prediction in `match` (either `true` or `false`).
                         // If neither prediction exceeds the threshold, `match` is `null`.
-
+                        for(const pred in predictions["toxicity"]) {
+                            for(const text in pred) {
+                                
+                            }
+                        }
                         console.log(predictions);
                         return predictions;
                     });

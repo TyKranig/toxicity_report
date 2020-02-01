@@ -1,4 +1,31 @@
-var chat = {}
+const chat = {}
+
+const getToxic = async () => {
+    // The minimum prediction confidence
+    const threshold = 0.9;
+    let index = 0;
+    await toxicity.load(threshold).then(async model => {
+        for (const player in chat) {
+            if (index > 5) break;
+            index++;
+            let i = 0;
+            const text = chat[player].replace("undefined\t", "");
+            const sentences = text.split("\t");
+            await model.classify(sentences).then(predictions => {
+                document.getElementById("toxicity").innerHTML = `${i}`;
+                results = predictions[6].results
+                const returnable = {
+                    "player": player,
+                    "count": 0
+                }
+                results.forEach(r => {
+                    returnable["count"] += r.match ? 1 : 0;
+                });
+                console.log(returnable);
+            });
+        }
+    });
+}
 
 function getGame(matchid) {
     return axios.get(`https://api.opendota.com/api/matches/${matchid}`).then(result => {
@@ -10,11 +37,8 @@ function getGame(matchid) {
             if (obj["type"] == "chat" && obj["slot"] < 10) {
                 obj["account_id"] = players[obj["slot"]]["account_id"];
                 all.push(obj);
-                // console.log(obj)
-                // chat[players[obj["slot"]]["account_id"]] += `\t${obj["key"]}`
             }
         }
-        // console.log(all)
         return all;
     }).catch(error => {
         console.log(matchid);
@@ -42,7 +66,7 @@ async function getChat(games) {
             mat = values[match];
             for (const text in mat) {
                 te = mat[text];
-                chat[te["account_id"]] += ` ${te["key"]}`;
+                chat[te["account_id"]] += `\t${te["key"]}`;
             }
         }
         getToxic();
@@ -61,47 +85,4 @@ const upload = () => {
     } else {
         alert("This browser does not support HTML5.");
     }
-}
-
-const getToxic = () => {
-    // The minimum prediction confidence
-    const threshold = 0.9;
-    const proms = [];
-    let index = 0;
-    console.log(chat)
-    for (const i in chat) {
-        if (index > 2) {
-            return 0;
-        }
-        if (chat.hasOwnProperty(i)) {
-            const text = chat[i].replace("undefined ", "")
-            // dictionary get amount of keys
-            // Load the model. Users optionally pass in a threshold and an array of
-            // labels to include.
-            const playertox = {}
-            const promise = new Promise(async () => {
-                toxicity.load(threshold).then(model => {
-                    const sentences = text.split(" ");
-                    document.getElementById("toxicity").innerHTML = `${index++}/${chat.length}`
-                    model.classify(sentences).then(predictions => {
-                        // `predictions` is an array of objects, one for each prediction head,
-                        // that contains the raw probabilities for each input along with the
-                        // final prediction in `match` (either `true` or `false`).
-                        // If neither prediction exceeds the threshold, `match` is `null`.
-                        for(const text in predictions[6]) {
-                            for(const pred in predictions[6][text]) {
-                                
-                            }
-                        }
-                        console.log(predictions);
-                        return predictions;
-                    });
-                });
-            });
-            proms.push(promise);
-        }
-    }
-    Promise.all(proms).then(values => {
-        console.log(values);
-    });
 }

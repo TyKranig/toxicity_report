@@ -68,6 +68,7 @@ const getToxic = () => {
     const threshold = 0.9;
     const proms = [];
     let index = 0;
+    console.log(chat)
     for (const i in chat) {
         if (index > 2) {
             return 0;
@@ -87,8 +88,8 @@ const getToxic = () => {
                         // that contains the raw probabilities for each input along with the
                         // final prediction in `match` (either `true` or `false`).
                         // If neither prediction exceeds the threshold, `match` is `null`.
-                        for(const pred in predictions["toxicity"]) {
-                            for(const text in pred) {
+                        for(const text in predictions[6]) {
+                            for(const pred in predictions[6][text]) {
                                 
                             }
                         }

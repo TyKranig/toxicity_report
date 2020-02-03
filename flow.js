@@ -6,7 +6,7 @@ const getToxic = async () => {
     let index = 0;
     await toxicity.load(threshold).then(async model => {
         for (const player in chat) {
-            if (index > 5) break;
+            // if (index > 5) break;
             index++;
             let i = 0;
             const text = chat[player].replace("undefined\t", "");
@@ -57,9 +57,7 @@ async function getChat(games) {
         })
         document.getElementById("chat").innerHTML = `${i}/${games.length}`
         promises.push(getGame(match));
-        if (i > 3) {
-            break;
-        }
+        // if (i > 3) break;
     }
     Promise.all(promises).then(values => {
         for (match in values) {

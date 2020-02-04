@@ -4,6 +4,7 @@ const getToxic = async () => {
     // The minimum prediction confidence
     const threshold = 0.9;
     let index = 0;
+    all = {};
     await toxicity.load(threshold).then(async model => {
         for (const player in chat) {
             // if (index > 5) break;
@@ -12,6 +13,7 @@ const getToxic = async () => {
             const text = chat[player].replace("undefined\t", "");
             const sentences = text.split("\t");
             await model.classify(sentences).then(predictions => {
+                i++;
                 document.getElementById("toxicity").innerHTML = `${i}`;
                 results = predictions[6].results
                 const returnable = {
@@ -21,9 +23,10 @@ const getToxic = async () => {
                 results.forEach(r => {
                     returnable["count"] += r.match ? 1 : 0;
                 });
-                console.log(returnable);
+                console.log(returnable ,i);
             });
         }
+        console.log()
     });
 }
 
